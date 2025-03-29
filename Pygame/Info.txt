@@ -1,6 +1,0 @@
-The Pygame-pong/pygame/ directory simply exists for basic functions
-such as
-pygame files,
-Venv enviroment files
-and
-the Import Pygame thing
