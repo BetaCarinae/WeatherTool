@@ -28,7 +28,20 @@
             function handleSelection(value) {
             if (value === "current-forecast") {
                 console.log("Calling Current Forecast function...");
-                // Call your JavaScript or Python function here
+                fetch('/WeatherTool.py', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'current-forecast' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Current Forecast data:", data);
+                })
+                .catch(error => {
+                    console.error("Error calling Current Forecast function:", error);
+                });
             } else if (value === "forecast") {
                 console.log("Calling Forecast function...");
                 // Call your JavaScript or Python function here
