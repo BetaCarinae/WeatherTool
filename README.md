@@ -1,5 +1,6 @@
-WeatherTool V1.0
+WeatherTool V1.0-Beta
 
-Current Phase: ALMOST DONE
+Current Phase: Beta
 What im working on:
-Nothing at the moment
+Fancy interface
+uhh
