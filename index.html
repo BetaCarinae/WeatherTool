@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherTool</title>
+    <style>
+        .top-bar {
+            background-color: #4CAF50;
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        WeatherTool - Version V1.0-Beta
+        <select title="Call WeatherAPI" onchange="handleSelection(this.value)">
+            <option value="" disabled selected>Select an option</option>
+            <option value="current-forecast">Current Forecast</option>
+            <option value="forecast">Forecast</option>
+            <option value="alerts">Alerts</option>
+            <option value="astronomy">Astronomy</option>
+        </select>
+        <script>
+            function handleSelection(value) {
+            if (value === "current-forecast") {
+                console.log("Calling Current Forecast function...");
+                // Call your JavaScript or Python function here
+            } else if (value === "forecast") {
+                console.log("Calling Forecast function...");
+                // Call your JavaScript or Python function here
+            } else if (value === "alerts") {
+                console.log("Calling Alerts function...");
+                // Call your JavaScript or Python function here
+            } else if (value === "astronomy") {
+                console.log("Calling Astronomy function...");
+                fetch('/WeatherTool.py', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'astronomy' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Astronomy data:", data);
+                })
+                .catch(error => {
+                    console.error("Error calling Astronomy function:", error);
+                });
+            }
+            }
+        </script>
+            <option value="current-forecast">Current Forecast</option>
+            <option value="forecast">Forecast</option>
+            <option value="alerts">Alerts</option>
+            <option value="astronomy">Astronomy</option>
+        </select>
+    </div>
+</body>
+</html>
