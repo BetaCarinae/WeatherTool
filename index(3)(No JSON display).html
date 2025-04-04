@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherTool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dropdown, .location-input, .checkbox {
+            margin: 0 auto;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .checkbox label {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WeatherTool</h1>
+        <p>Version: V-1-0-Beta</p>
+    </header>
+    <div class="dropdown">
+        <label for="weather-options">Choose an option:</label>
+        <select id="weather-options">
+            <option value="current-forecast">Current Forecast</option>
+            <option value="forecast">Forecast</option>
+            <option value="alerts">Alerts</option>
+            <option value="astronomy">Astronomy</option>
+        </select>
+    </div>
+    <div class="location-input">
+        <label for="location">Enter Location:</label>
+        <input type="text" id="location" placeholder="Enter city or ZIP code">
+    </div>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" id="air-quality-alerts">
+            Receive Air Quality Alerts
+        </label>
+    </div>
+</body>
+</html>

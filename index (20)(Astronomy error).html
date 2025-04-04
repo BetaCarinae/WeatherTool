@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherTool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dropdown, .location-input, .checkbox {
+            margin: 0 auto;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .checkbox label {
+            font-size: 14px;
+        }
+        .response-box {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 600px;
+            padding: 10px;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            background-color: #363434;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WeatherTool</h1>
+        <p>Version: V-1-0-Beta</p>
+    </header>
+    <div class="dropdown">
+        <label for="weather-options">Choose an option:</label>
+        <select id="weather-options">
+            <option value="current">Current Forecast</option>
+            <option value="forecast">Forecast</option>
+            <option value="alerts">Alerts</option>
+            <option value="astronomy">Astronomy</option>
+        </select>
+    </div>
+    <div class="location-input">
+        <label for="location">Enter Location:</label>
+        <input type="text" id="location" placeholder="Enter city or ZIP code">
+    </div>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" id="air-quality-alerts">
+            Receive Air Quality Alerts
+        </label>
+    </div>
+    <div id="forecast-buttons" style="display: none; text-align: center; margin-top: 15px;">
+        <label for="days-input">Number of Days (1-14):</label>
+        <input type="number" id="days-input" min="1" max="14" placeholder="Enter days">
+        <div style="margin-top: 10px;">
+            </div>
+            <div id="astronomy-date-input" style="display: none; text-align: center; margin-top: 10px;">
+                <label for="date-input">Select Date (YYYY-MM-DD):</label>
+                <input type="date" id="date-input">
+            </div>
+            <label>
+            <input type="checkbox" id="alerts-checkbox">
+            Alerts
+            </label>
+        </div>
+    </div>
+    <script>
+        const weatherOptions = document.getElementById('weather-options');
+        const forecastButtons = document.getElementById('forecast-buttons');
+
+        weatherOptions.addEventListener('change', () => {
+            if (weatherOptions.value === 'forecast') {
+                forecastButtons.style.display = 'block';
+            } else {
+                forecastButtons.style.display = 'none';
+            }
+        });
+    </script>
+    <div class="response-box" id="response-box">
+        <strong>Response Code:</strong> <span id="response-code">N/A</span>
+        <br>
+        <strong>JSON Data:</strong>
+        <pre id="json-data">N/A</pre>
+        <button id="fetch-data-button" style="display: block; margin: 10px auto;">Fetch Data</button>
+        <p><strong>API URL:</strong> <span id="api-url">N/A</span></p>
+        <p><strong>Selected:</strong> <span id="id1">N/A</span></p>
+        <script>
+            document.getElementById('fetch-data-button').addEventListener('click', async () => {
+                const weatherOption = document.getElementById('weather-options').value;
+                const location = document.getElementById('location').value;
+                const airQualityAlerts = document.getElementById('air-quality-alerts').checked;
+                const airQualityAlertsValue = airQualityAlerts ? 'yes' : 'no';
+                if (!location) {
+                    alert('Please enter a location.');
+                    return;
+                }
+                if (weatherOption === 'astronomy') {
+                    alert('Astronomy option is not completed, Expect it around V-2.0 along with other options as well.');
+                    return;
+                }
+                
+                if (weatherOption === 'alerts') {
+                    if (!navigator.geolocation) {
+                        alert('Geolocation is not supported by your browser.');
+                        return;
+                    }
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+                            const apiUrl = `https://api.weatherapi.com/v1/${weatherOption}.json?key=23db7c3f79974942ab2234108252803&q=${latitude},${longitude}`;
+                            document.getElementById('api-url').textContent = apiUrl;
+
+                            fetch(apiUrl)
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    document.getElementById('response-code').textContent = '200';
+                                    document.getElementById('json-data').textContent = JSON.stringify(data, null, 2);
+                                })
+                                .catch((error) => {
+                                    document.getElementById('response-code').textContent = 'Error';
+                                    document.getElementById('json-data').textContent = error.message;
+                                });
+                        },
+                        (error) => {
+                            alert('Unable to retrieve your location.');
+                        }
+                    );
+                    return;
+                }
+                let apiUrl = `https://api.weatherapi.com/v1/${weatherOption}.json?key=23db7c3f79974942ab2234108252803&q=${encodeURIComponent(location)}&aqi=${airQualityAlertsValue}`;
+                
+                if (weatherOption === 'forecast') {
+                    const days = document.getElementById('days-input').value;
+                    const alerts = document.getElementById('alerts-checkbox').checked ? 'yes' : 'no';
+
+                    if (!days || days < 1 || days > 14) {
+                        alert('Please enter a valid number of days (1-14).');
+                        return;
+                    }
+
+                    apiUrl += `&days=${days}&alerts=${alerts}`;
+                }
+                document.getElementById('api-url').textContent = apiUrl;
+
+                try {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+
+                    document.getElementById('response-code').textContent = response.status;
+                    document.getElementById('json-data').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    document.getElementById('response-code').textContent = 'Error';
+                    document.getElementById('json-data').textContent = error.message;
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
